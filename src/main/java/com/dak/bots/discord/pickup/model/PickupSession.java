@@ -47,7 +47,7 @@ public class PickupSession {
 			log.trace("player {} already in session...", player);
 			return false;
 		} else {
-			players.add(PickupPlayer.builder().id(player.getId()).nickname(player.getNickname()).team(PickupTeam.NO_TEAM).isCaptain(false).build());
+			players.add(PickupPlayer.builder().id(player.getId()).tag(player.getTag()).nickname(player.getNickname()).team(PickupTeam.NO_TEAM).isCaptain(false).build());
 			return true;
 		}
 	}

@@ -109,13 +109,15 @@ public class PickupBot extends ListenerAdapter {
 
 				final PickupPlayer captainOne = PickupPlayer.builder()
 						.id(memberCaptainOne.getId())
-						.nickname(memberCaptainOne.getUser().getAsTag())
+						.tag(memberCaptainOne.getUser().getAsTag())
+						.nickname(memberCaptainOne.getNickname() != null ? memberCaptainOne.getNickname() : memberCaptainOne.getUser().getName())
 						.isCaptain(true)
 						.team(PickupTeam.TEAM_ONE)
 						.build();
 				final PickupPlayer captainTwo = PickupPlayer.builder()
 						.id(memberCaptainTwo.getId())
-						.nickname(memberCaptainTwo.getUser().getAsTag())
+						.tag(memberCaptainTwo.getUser().getAsTag())
+						.nickname(memberCaptainTwo.getNickname() != null ? memberCaptainTwo.getNickname() : memberCaptainTwo.getUser().getName())
 						.isCaptain(true)
 						.team(PickupTeam.TEAM_TWO)
 						.build();
@@ -155,12 +157,22 @@ public class PickupBot extends ListenerAdapter {
 					return;
 				}
 
-				final User user = event.getAuthor();
+				final User user = event.getAuthor(); 
+				final Member userAsMember = event.getGuild().getMemberById(user.getId());
+
 				session.addPlayer(PickupPlayer.builder()
 						.id(user.getId())
-						.nickname(user.getAsTag())
+						.tag(user.getAsTag())
+						.nickname(userAsMember.getNickname() != null ? userAsMember.getNickname() : user.getName())
 						.build());
-
+				
+				log.trace("nickname: {}; name: {}; user: {}", userAsMember.getNickname(), user.getName(), user);
+				
+				log.trace("player added. all players: ");
+				session.getPlayers().forEach(p -> {
+					log.trace("player: {}", p);
+				});
+				
 				event.getMessage().addReaction("👍").queue();
 
 				if(session.getNumberOfPlayersNeeded() == 0) {
@@ -174,7 +186,7 @@ public class PickupBot extends ListenerAdapter {
 					} else {
 						// session is ready for captains to pick
 						event.getChannel().sendMessage("Enough players are queued for captains to pick players. " 
-								+ session.getNextCaptainToPick().get().getNickname() + ", please ``!pick`` a player. \n" 
+								+ session.getNextCaptainToPick().get().getTag() + ", please ``!pick`` a player. \n" 
 								+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM)).queue();
 					}
 				} else {
@@ -219,7 +231,7 @@ public class PickupBot extends ListenerAdapter {
 						final Optional<PickupPlayer> nextCaptain = session.getNextCaptainToPick();
 						event.getChannel().sendMessage(
 								playerToAdd.getAsMention() + " added to " + captain.get().getTeam() + ". "
-										+ nextCaptain.get().getNickname()
+										+ nextCaptain.get().getTag()
 										+ ", it's your turn. Please ``!pickup pick`` a player. \n" 
 										+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM)).queue();
 					}

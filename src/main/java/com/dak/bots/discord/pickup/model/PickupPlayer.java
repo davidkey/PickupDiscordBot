@@ -10,6 +10,7 @@ import lombok.ToString;
 public class PickupPlayer {
 
 	private final String id;
+	private final String tag;
 	private final String nickname;
 	private final Boolean isCaptain;
 	private PickupTeam team;
