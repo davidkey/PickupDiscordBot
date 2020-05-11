@@ -1,4 +1,4 @@
-package com.dak.bots.discord.pickup.model;
+package com.dak.bots.discord.pickup.bot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,7 +154,7 @@ public class PickupSession {
 		}
 	}
 	
-	public void populateRosters() {
+	public void populateSession() {
 		if(this.isAutoFilled) {
 			final List<PickupPlayer> shuffledPlayers = players.stream().collect(toShuffledList());
 			for(int i = 0; i < teamSize*2; i++) {

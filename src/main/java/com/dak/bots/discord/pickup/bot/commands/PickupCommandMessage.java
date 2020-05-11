@@ -1,4 +1,4 @@
-package com.dak.bots.discord.pickup.model;
+package com.dak.bots.discord.pickup.bot.commands;
 
 import com.dak.bots.discord.pickup.exception.PickupBotException;
 
@@ -7,14 +7,14 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class PickupMessage {
+public class PickupCommandMessage {
 
 	private final String[] args;
-	private final PickupCommandType command;
+	private final PickupCommand command;
 
-	public PickupMessage(final String rawMessage) {
+	public PickupCommandMessage(final String rawMessage) {
 		this.args = this.parseArguments(rawMessage);
-		this.command = PickupCommandType.fromString(rawMessage.split("\\s")[1]);
+		this.command = PickupCommand.fromString(rawMessage.split("\\s")[1]);
 	}
 	
 	public static Boolean validateMessage(final String s) {
@@ -24,7 +24,7 @@ public class PickupMessage {
 		}
 		
 		try {
-			final PickupCommandType cmd = PickupCommandType.fromString(parts[1]);
+			final PickupCommand cmd = PickupCommand.fromString(parts[1]);
 			if(parts.length != cmd.getNumArgs() + 2) {
 				return false;
 			}
