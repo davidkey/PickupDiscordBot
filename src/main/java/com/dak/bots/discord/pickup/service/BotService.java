@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.dak.bots.discord.pickup.bot.commands.PickupCommand;
@@ -21,9 +22,11 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class BotService {
 	
 	private final Map<String, PickupSession> sessions;
+	private final String ADMIN_ROLE_NAME;
 	
-	public BotService() {
+	public BotService(@Value("${bot.adminRole}") String adminRoleName) {
 		this.sessions = new HashMap<>();
+		this.ADMIN_ROLE_NAME = adminRoleName;
 	}
 	
 	public boolean hasExistingSession(final String guildId) {
@@ -50,7 +53,7 @@ public class BotService {
 		final String userId = event.getAuthor().getId();
 		if(PickupCommand.CAPTAIN.equals(commandType) || PickupCommand.CLEAR.equals(commandType) || PickupCommand.AUTO.equals(commandType)) {
 			final List<Role> captainRoles = event.getGuild().getRoles().stream()
-					.filter(r -> r.getName().equalsIgnoreCase("Pickup Bot Admin Role"))
+					.filter(r -> ADMIN_ROLE_NAME.equalsIgnoreCase(r.getName()))
 					.collect(Collectors.toList());
 			if(captainRoles.isEmpty()) {
 				sendRolesMissingMessage(event.getChannel());
@@ -102,6 +105,6 @@ public class BotService {
 	}
 
 	public void sendRolesMissingMessage(final MessageChannel channel) {
-		channel.sendMessage("Role ``Pickup Bot Admin Role`` is missing from this server. Please ask a server admin to add it.").queue();
+		channel.sendMessage("Role ``" + ADMIN_ROLE_NAME + "`` is missing from this server. Please ask a server admin to add it.").queue();
 	}
 }
