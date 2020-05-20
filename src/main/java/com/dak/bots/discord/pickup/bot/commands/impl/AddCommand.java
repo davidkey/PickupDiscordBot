@@ -37,7 +37,7 @@ public class AddCommand implements PickupCommandExecutor {
 			if(session.getNumberOfPlayersNeeded() == 0) {
 				event.getChannel().sendMessage(user.getAsMention() + " added to session.");
 
-				if(session.getIsAutoFilled()) {
+				if(session.isAutoFilled()) {
 					// autofill rosters and display
 					session.populateSession();
 					service.sendGameReadyMsg(event.getChannel(), session);
@@ -45,8 +45,8 @@ public class AddCommand implements PickupCommandExecutor {
 				} else {
 					// session is ready for captains to pick
 					event.getChannel().sendMessage("Enough players are queued for captains to pick players. " 
-							+ session.getNextCaptainToPick().get().getTag() + ", please ``!pick`` a player. \n" 
-							+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM)).queue();
+							+ session.getNextCaptainToPick().get().getTag() + ", please ``!pickup pick`` a player. \n```" 
+							+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM) + "```").queue();
 				}
 			} else {
 				event.getChannel().sendMessage(user.getAsMention() + " added to session. Players in queue: \n" + 

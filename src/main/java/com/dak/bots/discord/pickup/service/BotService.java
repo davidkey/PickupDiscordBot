@@ -26,7 +26,7 @@ public class BotService {
 		this.sessions = new HashMap<>();
 	}
 	
-	public Boolean hasExistingSession(final String guildId) {
+	public boolean hasExistingSession(final String guildId) {
 		return sessions.containsKey(guildId);
 	}
 	
@@ -46,7 +46,7 @@ public class BotService {
 		sessions.remove(guildId);
 	}
 	
-	public Boolean hasPermissions(final PickupCommand commandType, final MessageReceivedEvent event) {
+	public boolean hasPermissions(final PickupCommand commandType, final MessageReceivedEvent event) {
 		final String userId = event.getAuthor().getId();
 		if(PickupCommand.CAPTAIN.equals(commandType) || PickupCommand.CLEAR.equals(commandType) || PickupCommand.AUTO.equals(commandType)) {
 			final List<Role> captainRoles = event.getGuild().getRoles().stream()

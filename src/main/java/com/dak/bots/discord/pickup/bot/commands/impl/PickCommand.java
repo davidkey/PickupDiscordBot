@@ -9,9 +9,11 @@ import com.dak.bots.discord.pickup.bot.model.PickupSession;
 import com.dak.bots.discord.pickup.bot.model.PickupTeam;
 import com.dak.bots.discord.pickup.service.BotService;
 
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+@Slf4j
 public class PickCommand implements PickupCommandExecutor {
 
 	@Override
@@ -28,8 +30,10 @@ public class PickCommand implements PickupCommandExecutor {
 				final PickupCommandMessage pickupMessage = new PickupCommandMessage(text);
 				final String[] args = pickupMessage.getArgs();
 
-				final String playerTagToAdd = args[0];
-				final User playerToAdd = event.getGuild().getMemberByTag(playerTagToAdd).getUser(); // is tag right?
+				//final String playerTagToAdd = args[0];
+				log.debug("playerIdToAdd: {}", args[0]);
+				final String playerIdToAdd = args[0].replaceAll("[^0-9]", "");
+				final User playerToAdd = event.getGuild().getMemberById(playerIdToAdd).getUser(); // is this right?
 				session.assignPlayerToTeam(playerToAdd.getId(), captain.get().getTeam());
 
 				if(session.isGameFull()) {
@@ -38,9 +42,10 @@ public class PickCommand implements PickupCommandExecutor {
 					service.removeSession(guildId);
 				} else {
 					final Optional<PickupPlayer> nextCaptain = session.getNextCaptainToPick();
+					final User nextCaptainUser = event.getGuild().getMemberById(nextCaptain.get().getId()).getUser();
 					event.getChannel().sendMessage(
 							playerToAdd.getAsMention() + " added to " + captain.get().getTeam() + ". "
-									+ nextCaptain.get().getTag()
+									+ nextCaptainUser.getAsMention()
 									+ ", it's your turn. Please ``!pickup pick`` a player. \n" 
 									+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM)).queue();
 				}

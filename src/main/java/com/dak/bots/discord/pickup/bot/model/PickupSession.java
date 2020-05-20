@@ -24,7 +24,7 @@ public class PickupSession {
 	private final String channelId;
 	private final Integer teamSize;
 	private Set<PickupPlayer> players;
-	private final Boolean isAutoFilled;
+	private final boolean isAutoFilled;
 	
 	public PickupSession(final String channelId, final Integer teamSize, final PickupPlayer teamOneCaptain, final PickupPlayer teamTwoCaptain) {
 		this.channelId = channelId;
@@ -42,7 +42,7 @@ public class PickupSession {
 		this.players = new HashSet<>();
 	}
 	
-	public Boolean addPlayer(final PickupPlayer player) {
+	public boolean addPlayer(final PickupPlayer player) {
 		if(isPlayerInSession(player.getId())) {
 			log.trace("player {} already in session...", player);
 			return false;
@@ -52,7 +52,7 @@ public class PickupSession {
 		}
 	}
 	
-	public Boolean assignPlayerToTeam(final String playerId, final PickupTeam team) {
+	public boolean assignPlayerToTeam(final String playerId, final PickupTeam team) {
 		if(isTeamFull(team)) {
 			log.trace("cannot add player to {} - team is full!", team);
 			return false;
@@ -69,15 +69,15 @@ public class PickupSession {
 		}
 	}
 	
-	public Boolean isTeamFull(final PickupTeam team) {
+	public boolean isTeamFull(final PickupTeam team) {
 		return players.stream().filter(a -> team.equals(a.getTeam())).count() == teamSize;
 	}
 	
-	public Boolean isGameFull() {
+	public boolean isGameFull() {
 		return isTeamFull(PickupTeam.TEAM_ONE) && isTeamFull(PickupTeam.TEAM_TWO);
 	}
 	
-	public Boolean isPlayerInSession(final String playerId) {
+	public boolean isPlayerInSession(final String playerId) {
 		return getPickupPlayerFromSession(playerId).isPresent();
 	}
 	
