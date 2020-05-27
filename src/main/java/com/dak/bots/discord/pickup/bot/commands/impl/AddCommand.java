@@ -43,9 +43,10 @@ public class AddCommand implements PickupCommandExecutor {
 					service.sendGameReadyMsg(event.getChannel(), session);
 					service.removeSession(guildId);
 				} else {
+					final User nextCaptainUser = event.getGuild().getMemberById(session.getNextCaptainToPick().get().getId()).getUser();
 					// session is ready for captains to pick
 					event.getChannel().sendMessage("Enough players are queued for captains to pick players. " 
-							+ session.getNextCaptainToPick().get().getTag() + ", please ``!pickup pick`` a player. \n```" 
+							+ nextCaptainUser.getAsMention() + ", please ``!pickup pick`` a player. \n```" 
 							+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM) + "```").queue();
 				}
 			} else {
