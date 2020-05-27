@@ -12,10 +12,14 @@ import java.util.stream.Collectors;
 import com.dak.bots.discord.pickup.exception.PickupBotException;
 import com.dak.bots.discord.pickup.util.TableRenderer;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+@Builder(toBuilder=true)
+@AllArgsConstructor
 @Getter
 @ToString
 @Slf4j
@@ -40,6 +44,26 @@ public class PickupSession {
 		this.teamSize = teamSize;
 		this.isAutoFilled = true;
 		this.players = new HashSet<>();
+	}
+	
+	public boolean isOversized() {
+		return this.players.size() > (this.teamSize * 2);
+	}
+	
+	public boolean trimDownToSize() {
+		if(this.isOversized()) {
+			final Set<PickupPlayer> trimmedPlayers = new HashSet<>();
+			trimmedPlayers.addAll(this.players.stream().filter(PickupPlayer::getIsCaptain).collect(Collectors.toList()));
+			trimmedPlayers.addAll(this.players.stream().filter(p -> !p.getIsCaptain()).limit((this.teamSize * 2) - 2).collect(Collectors.toList()));
+			this.players = trimmedPlayers;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean removePlayer(final String playerId) {
+		return this.players.removeIf(p -> p.getId().equals(playerId));
 	}
 	
 	public boolean addPlayer(final PickupPlayer player) {

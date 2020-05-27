@@ -51,7 +51,10 @@ public class BotService {
 	
 	public boolean hasPermissions(final PickupCommand commandType, final MessageReceivedEvent event) {
 		final String userId = event.getAuthor().getId();
-		if(PickupCommand.CAPTAIN.equals(commandType) || PickupCommand.CLEAR.equals(commandType) || PickupCommand.AUTO.equals(commandType)) {
+		if(PickupCommand.CAPTAIN.equals(commandType) 
+				|| PickupCommand.CLEAR.equals(commandType) 
+				|| PickupCommand.AUTO.equals(commandType)
+				| PickupCommand.RESIZE.equals(commandType)) {
 			final List<Role> captainRoles = event.getGuild().getRoles().stream()
 					.filter(r -> ADMIN_ROLE_NAME.equalsIgnoreCase(r.getName()))
 					.collect(Collectors.toList());
@@ -87,9 +90,17 @@ public class BotService {
 				"\nView session status:" +
 				"```!pickup status```" +
 				"\nClear existing session:" +
-				"```!pickup clear```"
+				"```!pickup clear```" +
+				"\nResize existing session:" +
+				"```!pickup resize [team size]```" + 
+				"\nRemove me from session:" +
+				"```!pickup remove```"
 				)
 		.queue();
+	}
+	
+	public void sendGameResizedMsg(final MessageChannel channel, final PickupSession session) {
+		channel.sendMessage("The game has been resized! \n\n" + session.prettyPrint()).queue();
 	}
 
 	public void sendPermissionsErrorMsg(final MessageChannel channel) {
