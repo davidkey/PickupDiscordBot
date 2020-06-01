@@ -3,6 +3,13 @@ node {
   	checkout scm 
    }
 
+   stage('Apply Permissions') {
+       // steps {
+            sh 'pwd'
+            sh 'chmod +x mvnw'
+       // }
+   }
+
    /*stage('Test') {
        // steps {
             sh 'pwd'
