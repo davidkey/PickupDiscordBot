@@ -1,6 +1,6 @@
 package com.dak.bots.discord.pickup.bot;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class PickupBot extends ListenerAdapter {
 	private final String commandString;
 	private final Boolean isCommandStringCaseSensitive;
 	private final String botClientId;
-	
+
 	public PickupBot(
 			final BotService pickupBotService, 
 			@Value("${bot.commandString}") final String commandString, 
@@ -47,14 +47,13 @@ public class PickupBot extends ListenerAdapter {
 			}
 
 			final String text = event.getMessage().getContentRaw().trim();
-			
+
 			/**
 			 * If someone mentions the bot, respond accordingly
 			 */
 			if(wasBotMentioned(event)) {
 				log.trace("someone mentioned us ({})", text);
-				final File f = new File(this.getClass().getClassLoader().getResource("images/youTalkinToMe.gif").getFile());
-				event.getChannel().sendMessage(event.getAuthor().getAsMention()).addFile(f).queue();
+				replyToBotMention(event);
 			}
 
 			if(isMessageForBot(text)) {
@@ -80,6 +79,11 @@ public class PickupBot extends ListenerAdapter {
 		}
 	}
 	
+	private void replyToBotMention(final MessageReceivedEvent event) {
+		final InputStream is = getClass().getClassLoader().getResourceAsStream("images/youTalkinToMe.gif");
+		event.getChannel().sendMessage(event.getAuthor().getAsMention()).addFile(is, "youTalkinToMe.gif").queue();
+	}
+
 	private Boolean wasBotMentioned(final MessageReceivedEvent event) {
 		final List<Member> mentionedMembers = event.getMessage().getMentionedMembers();
 
@@ -88,15 +92,15 @@ public class PickupBot extends ListenerAdapter {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private Boolean isMessageForBot(final String input) {
 		if(input == null || input.isEmpty()) {
 			return false;
 		}
-		
+
 		if(isCommandStringCaseSensitive) {
 			return input.startsWith(commandString);
 		} else {
