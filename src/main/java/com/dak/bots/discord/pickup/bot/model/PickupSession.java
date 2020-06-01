@@ -1,5 +1,6 @@
 package com.dak.bots.discord.pickup.bot.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,24 +12,39 @@ import java.util.stream.Collectors;
 
 import com.dak.bots.discord.pickup.exception.PickupBotException;
 import com.dak.bots.discord.pickup.util.TableRenderer;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Builder(toBuilder=true)
-@AllArgsConstructor
+//@AllArgsConstructor(onConstructor = @__(@com.fasterxml.jackson.annotation.JsonCreator(mode = com.fasterxml.jackson.annotation.JsonCreator.Mode.PROPERTIES)))
 @Getter
 @ToString
 @Slf4j
-public class PickupSession {
-
+public class PickupSession implements Serializable {
+	private static final long serialVersionUID = 7830964273186299165L;
+	
 	private final String channelId;
 	private final Integer teamSize;
 	private Set<PickupPlayer> players;
 	private final boolean isAutoFilled;
+	
+	@JsonCreator(mode = JsonCreator.Mode.DEFAULT)
+	public PickupSession(
+			@JsonProperty("channelId") final String channelId, 
+			@JsonProperty("teamSize") final Integer teamSize, 
+			@JsonProperty("players") final Set<PickupPlayer> players, 
+			@JsonProperty("autoFilled") final boolean isAutoFilled) {
+		this.channelId = channelId;
+		this.teamSize = teamSize;
+		this.players = players;
+		this.isAutoFilled = isAutoFilled;
+	}
 	
 	public PickupSession(final String channelId, final Integer teamSize, final PickupPlayer teamOneCaptain, final PickupPlayer teamTwoCaptain) {
 		this.channelId = channelId;
@@ -46,10 +62,12 @@ public class PickupSession {
 		this.players = new HashSet<>();
 	}
 	
+	@JsonIgnore
 	public boolean isOversized() {
 		return this.players.size() > (this.teamSize * 2);
 	}
 	
+	@JsonIgnore
 	public boolean trimDownToSize() {
 		if(this.isOversized()) {
 			final Set<PickupPlayer> trimmedPlayers = new HashSet<>();
@@ -97,6 +115,7 @@ public class PickupSession {
 		return players.stream().filter(a -> team.equals(a.getTeam())).count() == teamSize;
 	}
 	
+	@JsonIgnore
 	public boolean isGameFull() {
 		return isTeamFull(PickupTeam.TEAM_ONE) && isTeamFull(PickupTeam.TEAM_TWO);
 	}
@@ -105,10 +124,12 @@ public class PickupSession {
 		return getPickupPlayerFromSession(playerId).isPresent();
 	}
 	
+	@JsonIgnore
 	public List<PickupPlayer> getPlayersByTeam(final PickupTeam team){
 		return players.stream().filter(a -> team.equals(a.getTeam())).collect(Collectors.toList());
 	}
 	
+	@JsonIgnore
 	private Optional<PickupPlayer> getPickupPlayerFromSession(final String playerId) {
 		for(PickupPlayer player : players) {
 			if(player.getId().equals(playerId)) {
@@ -119,6 +140,7 @@ public class PickupSession {
 		return Optional.empty();
 	}
 	
+	@JsonIgnore
 	public String prettyPrint() {
 		final StringBuilder sb = new StringBuilder();
 		
@@ -131,6 +153,7 @@ public class PickupSession {
 		return sb.toString();
 	}
 	
+	@JsonIgnore
 	public String getPrettyPrintedPlayersByTeam(final PickupTeam team) {
 		final TableRenderer teamRenderer = new TableRenderer();
 		if(PickupTeam.NO_TEAM.equals(team)) {
@@ -155,14 +178,17 @@ public class PickupSession {
 		return teamRenderer.build();
 	}
 	
+	@JsonIgnore
 	public Integer getNumberOfPlayersNeeded() {
 		return (teamSize * 2) - players.size();
 	}
 	
+	@JsonIgnore
 	private Optional<PickupPlayer> getCaptain(final PickupTeam team) {
 		return players.stream().filter(a -> a.getIsCaptain() && a.getTeam().equals(team)).findFirst();
 	}
 	
+	@JsonIgnore
 	public Optional<PickupPlayer> getNextCaptainToPick() {
 		if(isGameFull()) {
 			return Optional.empty();

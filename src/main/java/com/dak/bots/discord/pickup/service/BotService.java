@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.stereotype.Service;
@@ -14,48 +17,83 @@ import com.dak.bots.discord.pickup.bot.commands.PickupCommand;
 import com.dak.bots.discord.pickup.bot.model.PickupSession;
 import com.dak.bots.discord.pickup.exception.PickupBotException;
 
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 @Service
+@Slf4j
 public class BotService {
-	
+
 	private final Map<String, PickupSession> sessions;
 	private final String adminRoleName;
 	private final String commandString;
 	private final GitProperties gitProperties;
 	private final String baseUrl;
-	
+	private final SerializationService serializationService;
+
 	public BotService(
 			@Value("${bot.adminRole}") final String adminRoleName, 
 			@Value("${bot.commandString}") final String commandString,
 			final GitProperties gitProperties,
-			@Value("${github.baseUrl}") final String baseUrl) {
+			@Value("${github.baseUrl}") final String baseUrl,
+			final SerializationService serializationService) {
 		this.sessions = new HashMap<>();
 		this.adminRoleName = adminRoleName;
 		this.commandString = commandString;
 		this.gitProperties = gitProperties;
 		this.baseUrl = baseUrl;
+		this.serializationService = serializationService;
 	}
-	
+
+	@PostConstruct
+	public void loadSessions() {
+		log.debug("attempting to load existing sessions");
+		try {
+			this.sessions.putAll(this.serializationService.loadSessions());
+			log.debug("sessions loaded: {}", this.sessions.size());
+		}  catch (PickupBotException e) {
+			log.warn("failed to load existing sessions", e);
+		}
+	}
+
+	@PreDestroy
+	public void destroy() {
+		/**
+		 * Attempt to save any outstanding sessions
+		 */
+		if(sessions.isEmpty()) {
+			return;
+		}
+
+		log.debug("Attempting to save {} sessions", sessions.values().size());
+		try {
+			if(!sessions.isEmpty()) {
+				this.serializationService.saveSessions(sessions);
+			}
+		} catch (PickupBotException e) {
+			log.error("Failed to save sessions!", e);
+		}
+	}
+
 	public String getScmUrl() {
 		return this.baseUrl + this.getGitProperties().getCommitId();
 	}
-	
+
 	public GitProperties getGitProperties() {
 		return this.gitProperties;
 	}
-	
+
 	public String getCommandString() {
 		return this.commandString;
 	}
-	
+
 	public boolean hasExistingSession(final String guildId) {
 		return sessions.containsKey(guildId);
 	}
-	
+
 	public Optional<PickupSession> getSession(final String guildId) {
 		if(sessions.containsKey(guildId)) {
 			return Optional.of(sessions.get(guildId));
@@ -63,15 +101,15 @@ public class BotService {
 			return Optional.empty();
 		}
 	}
-	
+
 	public void addSession(final String guildId, final PickupSession session) {
 		sessions.put(guildId, session);
 	}
-	
+
 	public void removeSession(final String guildId) {
 		sessions.remove(guildId);
 	}
-	
+
 	public boolean hasPermissions(final PickupCommand commandType, final MessageReceivedEvent event) {
 		final String userId = event.getAuthor().getId();
 		if(PickupCommand.CAPTAIN.equals(commandType) 
@@ -121,7 +159,7 @@ public class BotService {
 				)
 		.queue();
 	}
-	
+
 	public void sendGameResizedMsg(final MessageChannel channel, final PickupSession session) {
 		channel.sendMessage("The game has been resized! \n\n" + session.prettyPrint()).queue();
 	}
