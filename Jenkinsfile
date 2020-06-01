@@ -3,14 +3,14 @@ node {
   	checkout scm 
    }
 
-   stage('Test') {
+   /*stage('Test') {
        // steps {
             sh 'pwd'
             sh 'chmod +x mvnw'
             sh "./mvnw clean test"
 	    junit 'target/surefire-reports/*.xml'
        // }
-   }
+   }*/
 
    stage('Build') {
        // steps {
