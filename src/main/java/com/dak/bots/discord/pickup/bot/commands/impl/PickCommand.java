@@ -46,7 +46,7 @@ public class PickCommand implements PickupCommandExecutor {
 					event.getChannel().sendMessage(
 							playerToAdd.getAsMention() + " added to " + captain.get().getTeam() + ". "
 									+ nextCaptainUser.getAsMention()
-									+ ", it's your turn. Please ``!pickup pick`` a player. \n" 
+									+ ", it's your turn. Please ``" + service.getCommandString() + " pick`` a player. \n" 
 									+ session.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM)).queue();
 				}
 

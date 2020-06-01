@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.GitProperties;
 import org.springframework.stereotype.Service;
 
 import com.dak.bots.discord.pickup.bot.commands.PickupCommand;
@@ -22,11 +23,33 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class BotService {
 	
 	private final Map<String, PickupSession> sessions;
-	private final String ADMIN_ROLE_NAME;
+	private final String adminRoleName;
+	private final String commandString;
+	private final GitProperties gitProperties;
+	private final String baseUrl;
 	
-	public BotService(@Value("${bot.adminRole}") String adminRoleName) {
+	public BotService(
+			@Value("${bot.adminRole}") final String adminRoleName, 
+			@Value("${bot.commandString}") final String commandString,
+			final GitProperties gitProperties,
+			@Value("${github.baseUrl}") final String baseUrl) {
 		this.sessions = new HashMap<>();
-		this.ADMIN_ROLE_NAME = adminRoleName;
+		this.adminRoleName = adminRoleName;
+		this.commandString = commandString;
+		this.gitProperties = gitProperties;
+		this.baseUrl = baseUrl;
+	}
+	
+	public String getScmUrl() {
+		return this.baseUrl + this.getGitProperties().getCommitId();
+	}
+	
+	public GitProperties getGitProperties() {
+		return this.gitProperties;
+	}
+	
+	public String getCommandString() {
+		return this.commandString;
 	}
 	
 	public boolean hasExistingSession(final String guildId) {
@@ -56,7 +79,7 @@ public class BotService {
 				|| PickupCommand.AUTO.equals(commandType)
 				| PickupCommand.RESIZE.equals(commandType)) {
 			final List<Role> captainRoles = event.getGuild().getRoles().stream()
-					.filter(r -> ADMIN_ROLE_NAME.equalsIgnoreCase(r.getName()))
+					.filter(r -> adminRoleName.equalsIgnoreCase(r.getName()))
 					.collect(Collectors.toList());
 			if(captainRoles.isEmpty()) {
 				sendRolesMissingMessage(event.getChannel());
@@ -80,21 +103,21 @@ public class BotService {
 	public void sendHelpMsg(final MessageChannel channel, final Boolean hasError) {
 		channel.sendMessage((hasError ? "Invalid Pickup Bot format! \n\n" : "") + 
 				"Start a new pickup session with captains:" +
-				"```!pickup captain @captain_one @captain_two [team size]```" +
+				"```" + commandString + " captain @captain_one @captain_two [team size]```" +
 				"\nStart a new pickup game with randomly selected teams:" +
-				"```!pickup auto [team size]```" +
+				"```" + commandString + " auto [team size]```" +
 				"\nAdd yourself as a player to an ongoing pickup session:" +
-				"```!pickup add```" + 
+				"```" + commandString + " add```" + 
 				"\nAs a captain, pick a player from the queue (only if queue is full):" +
-				"```!pickup pick @user```" +
+				"```" + commandString + " pick @user```" +
 				"\nView session status:" +
-				"```!pickup status```" +
+				"```" + commandString + " status```" +
 				"\nClear existing session:" +
-				"```!pickup clear```" +
+				"```" + commandString + " clear```" +
 				"\nResize existing session:" +
-				"```!pickup resize [team size]```" + 
+				"```" + commandString + " resize [team size]```" + 
 				"\nRemove me from session:" +
-				"```!pickup remove```"
+				"```" + commandString + " remove```"
 				)
 		.queue();
 	}
@@ -116,6 +139,6 @@ public class BotService {
 	}
 
 	public void sendRolesMissingMessage(final MessageChannel channel) {
-		channel.sendMessage("Role ``" + ADMIN_ROLE_NAME + "`` is missing from this server. Please ask a server admin to add it.").queue();
+		channel.sendMessage("Role ``" + adminRoleName + "`` is missing from this server. Please ask a server admin to add it.").queue();
 	}
 }

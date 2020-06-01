@@ -54,7 +54,7 @@ public class ResizeCommand implements PickupCommandExecutor {
 					} else {
 						final User nextCaptainUser = event.getGuild().getMemberById(resizedSession.getNextCaptainToPick().get().getId()).getUser();
 						event.getChannel().sendMessage("Enough players are queued for captains to pick players. " 
-								+ nextCaptainUser.getAsMention() + ", please ``!pickup pick`` a player. \n```" 
+								+ nextCaptainUser.getAsMention() + ", please ``" + service.getCommandString() + " pick`` a player. \n```" 
 								+ resizedSession.getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM) + "```").queue();
 					}
 					return;

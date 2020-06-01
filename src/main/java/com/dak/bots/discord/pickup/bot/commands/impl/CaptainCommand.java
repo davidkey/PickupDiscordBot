@@ -61,7 +61,7 @@ public class CaptainCommand implements PickupCommandExecutor {
 
 			final StringBuilder sb = new StringBuilder();
 			sb.append("Pickup session created: \n\n" + session.prettyPrint());
-			sb.append("\nPlayers, please queue for the session by entering ``!pickup add``");
+			sb.append("\nPlayers, please queue for the session by entering ``" + service.getCommandString() + " add``");
 
 			event.getChannel().sendMessage(sb.toString()).queue();
 

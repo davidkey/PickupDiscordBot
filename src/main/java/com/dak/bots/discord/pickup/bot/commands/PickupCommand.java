@@ -4,6 +4,7 @@ import com.dak.bots.discord.pickup.bot.commands.impl.AddCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.AutoCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.CaptainCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.ClearCommand;
+import com.dak.bots.discord.pickup.bot.commands.impl.DebugCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.HelpCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.PickCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.RemoveCommand;
@@ -25,7 +26,8 @@ public enum PickupCommand implements PickupCommandExecutor {
 	RESIZE("resize", 1, new ResizeCommand()),
 	PICK("pick", 1, new PickCommand()),
 	STATUS("status", 0, new StatusCommand()),
-	CLEAR("clear", 0, new ClearCommand());
+	CLEAR("clear", 0, new ClearCommand()),
+	DEBUG("debug", 0, new DebugCommand());
 
 	private final String commandText;
 	private final Integer numArgs;

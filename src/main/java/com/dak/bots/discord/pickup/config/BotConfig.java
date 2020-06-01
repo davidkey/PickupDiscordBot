@@ -16,11 +16,11 @@ import net.dv8tion.jda.api.entities.Activity;
 public class BotConfig {
 
 	@Bean
-	public JDA getJDA(@Value("${bot.token}") final String token) throws InterruptedException, LoginException {
+	public JDA getJDA(@Value("${bot.token}") final String token, @Value("${bot.commandString}") final String commandString) throws InterruptedException, LoginException {
 		log.trace("getJDA({})", token);
 		
 		final JDABuilder builder = new JDABuilder(token);
-		builder.setActivity(Activity.playing("!pickup help"));
+		builder.setActivity(Activity.playing(commandString + " help"));
 		final JDA jda = builder.build();
 		jda.awaitReady();
 		

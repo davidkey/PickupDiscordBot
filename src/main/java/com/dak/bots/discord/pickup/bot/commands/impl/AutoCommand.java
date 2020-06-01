@@ -30,7 +30,7 @@ public class AutoCommand implements PickupCommandExecutor {
 			final PickupSession pickupSession = new PickupSession(event.getChannel().getId().replaceAll("[^0-9]", ""), teamSize);
 			service.addSession(guildId, pickupSession);
 
-			event.getChannel().sendMessage("Auto-populated pickup session created. Players, please ``!pickup add`` to join.").queue();
+			event.getChannel().sendMessage("Auto-populated pickup session created. Players, please ``" + service.getCommandString() + " add`` to join.").queue();
 		} else {
 			service.sendPermissionsErrorMsg(event.getChannel());
 		}
