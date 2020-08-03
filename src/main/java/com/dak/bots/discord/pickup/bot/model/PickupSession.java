@@ -153,7 +153,11 @@ public class PickupSession implements Serializable {
 		final StringBuilder sb = new StringBuilder();
 
 		if(isTeamless) {
-			sb.append("**Team We-don't-need-no-stinkin-teams** ```" + getPrettyPrintedPlayersByTeam(PickupTeam.TEAM_ONE) + "```");
+			if(this.isGameFull()) {
+				sb.append("**Team We-don't-need-no-stinkin-teams** ```" + getPrettyPrintedPlayersByTeam(PickupTeam.TEAM_ONE) + "```");
+			} else {
+				sb.append("**Team We-don't-need-no-stinkin-teams** ```" + getPrettyPrintedPlayersByTeam(PickupTeam.NO_TEAM) + "```");
+			}
 		} else {
 			sb.append("**Team One** ```" + getPrettyPrintedPlayersByTeam(PickupTeam.TEAM_ONE) + "```");
 
@@ -178,7 +182,7 @@ public class PickupSession implements Serializable {
 		int count = 0;
 		for(PickupPlayer player : players) {
 			if(PickupTeam.NO_TEAM.equals(team)) {
-				teamRenderer.addRow(++count, player.getNickname());
+				teamRenderer.addRow(++count, player.getNickname(), "");
 			} else {
 				teamRenderer.addRow(++count, player.getNickname(), player.getIsCaptain() ? "X" : "");
 			}
