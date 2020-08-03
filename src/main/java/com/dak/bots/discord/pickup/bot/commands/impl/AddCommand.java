@@ -37,7 +37,7 @@ public class AddCommand implements PickupCommandExecutor {
 			if(session.getNumberOfPlayersNeeded() == 0) {
 				event.getChannel().sendMessage(user.getAsMention() + " added to session.");
 
-				if(session.isAutoFilled()) {
+				if(session.isAutoFilled() || session.isTeamless()) {
 					// autofill rosters and display
 					session.populateSession();
 					service.sendGameReadyMsg(event.getChannel(), session);
