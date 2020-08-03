@@ -114,7 +114,9 @@ public class BotService {
 		final String userId = event.getAuthor().getId();
 		if(PickupCommand.CAPTAIN.equals(commandType) 
 				|| PickupCommand.CLEAR.equals(commandType) 
+				|| PickupCommand.FLUSH.equals(commandType)
 				|| PickupCommand.AUTO.equals(commandType)
+				|| PickupCommand.TEAMLESS.equals(commandType)
 				| PickupCommand.RESIZE.equals(commandType)) {
 			final List<Role> captainRoles = event.getGuild().getRoles().stream()
 					.filter(r -> adminRoleName.equalsIgnoreCase(r.getName()))
@@ -144,6 +146,8 @@ public class BotService {
 				"```" + commandString + " captain @captain_one @captain_two [team size]```" +
 				"\nStart a new pickup game with randomly selected teams:" +
 				"```" + commandString + " auto [team size]```" +
+				"\nStart a new pickup game with no teams:" +
+				"```" + commandString + " teamless [group size]```" +
 				"\nAdd yourself as a player to an ongoing pickup session:" +
 				"```" + commandString + " add```" + 
 				"\nAs a captain, pick a player from the queue (only if queue is full):" +

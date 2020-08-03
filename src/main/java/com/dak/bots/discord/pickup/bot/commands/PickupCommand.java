@@ -6,6 +6,7 @@ import com.dak.bots.discord.pickup.bot.commands.impl.CaptainCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.ClearCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.DebugCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.HelpCommand;
+import com.dak.bots.discord.pickup.bot.commands.impl.TeamlessCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.PickCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.RemoveCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.ResizeCommand;
@@ -21,12 +22,14 @@ public enum PickupCommand implements PickupCommandExecutor {
 	HELP("help", 0, new HelpCommand()),
 	CAPTAIN("captain", 3, new CaptainCommand()),
 	AUTO("auto", 1, new AutoCommand()),
+	TEAMLESS("teamless", 1, new TeamlessCommand()),
 	ADD("add", 0, new AddCommand()),
 	REMOVE("remove", 0, new RemoveCommand()),
 	RESIZE("resize", 1, new ResizeCommand()),
 	PICK("pick", 1, new PickCommand()),
 	STATUS("status", 0, new StatusCommand()),
 	CLEAR("clear", 0, new ClearCommand()),
+	FLUSH("flush", 0, new ClearCommand()),
 	DEBUG("debug", 0, new DebugCommand());
 
 	private final String commandText;
