@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.GitProperties;
 
-//import com.dak.bots.discord.pickup.config.GitProperties;
 import com.dak.bots.discord.pickup.service.BotRunnerService;
 
 import lombok.RequiredArgsConstructor;
