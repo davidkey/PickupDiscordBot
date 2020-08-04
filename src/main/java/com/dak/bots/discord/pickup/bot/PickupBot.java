@@ -58,7 +58,7 @@ public class PickupBot extends ListenerAdapter {
 
 			if(isMessageForBot(text)) {
 				final MessageChannel channel = event.getChannel();
-
+				
 				/**
 				 * Validate message; send help if invalid
 				 */
@@ -69,7 +69,8 @@ public class PickupBot extends ListenerAdapter {
 
 				final PickupCommandMessage pickupMessage = new PickupCommandMessage(text);
 
-				log.trace("pickup message received: {} (raw: {})", pickupMessage, text);
+				log.trace("pickup message received: guildId={}; user={}; channel={}; channelId={}; pickupMessage={}; raw={}", 
+						event.getGuild().getId(), event.getAuthor().getAsTag(), channel.getName(), channel.getId(), pickupMessage, text);
 
 				/**
 				 * Dispatch command
@@ -78,8 +79,9 @@ public class PickupBot extends ListenerAdapter {
 			}
 		}
 	}
-	
+
 	private void replyToBotMention(final MessageReceivedEvent event) {
+		// note that we're not closing this stream because addFile handles that for us
 		final InputStream is = getClass().getClassLoader().getResourceAsStream("images/youTalkinToMe.gif");
 		event.getChannel().sendMessage(event.getAuthor().getAsMention()).addFile(is, "youTalkinToMe.gif").queue();
 	}

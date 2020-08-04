@@ -16,9 +16,9 @@ public class CaptainCommand implements PickupCommandExecutor {
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
 		if(service.hasPermissions(PickupCommand.CAPTAIN, event)) {
-			final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
-			if(service.hasExistingSession(guildId)) {
-				if(!service.getSession(guildId).get().isGameFull()) {
+			final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
+			if(service.hasExistingSession(channelId)) {
+				if(!service.getSession(channelId).get().isGameFull()) {
 					// there's still a matchmaking session in progress...
 					event.getChannel().sendMessage("There is already a pickup session in progress.").queue();
 					return;
@@ -51,11 +51,11 @@ public class CaptainCommand implements PickupCommandExecutor {
 					.build();
 
 			final PickupSession session = new PickupSession(event.getChannel().getId().replaceAll("[^0-9]", ""), teamSize, captainOne, captainTwo);
-			service.addSession(guildId, session);
+			service.addSession(channelId, session);
 
 			if(session.isGameFull()) {
 				service.sendGameReadyMsg(event.getChannel(), session);
-				service.removeSession(guildId);
+				service.removeSession(channelId);
 				return;
 			}
 

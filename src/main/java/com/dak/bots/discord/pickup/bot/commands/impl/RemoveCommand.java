@@ -13,12 +13,12 @@ public class RemoveCommand implements PickupCommandExecutor {
 
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
-		final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
-		if(service.hasExistingSession(guildId)) {
-			final PickupSession session = service.getSession(guildId).get();
+		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
+		if(service.hasExistingSession(channelId)) {
+			final PickupSession session = service.getSession(channelId).get();
 			final User user = event.getAuthor(); 
 
-			log.trace("attempting to remove player {} from session for guild {}", user.getAsMention(), guildId);
+			log.trace("attempting to remove player {} from session for guild {}", user.getAsMention(), channelId);
 			if(session.isGameFull()) {
 				event.getChannel().sendMessage("Player " + user.getAsMention() + " cannot be removed from session as game is already full!").queue();
 			} else if(session.removePlayer(user.getId())) {
