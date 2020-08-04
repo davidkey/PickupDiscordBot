@@ -9,9 +9,9 @@ public class StatusCommand implements PickupCommandExecutor {
 
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
-		final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
-		if(service.hasExistingSession(guildId)) {
-			event.getChannel().sendMessage(service.getSession(guildId).get().prettyPrint()).queue();
+		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
+		if(service.hasExistingSession(channelId)) {
+			event.getChannel().sendMessage(service.getSession(channelId).get().prettyPrint()).queue();
 		} else {
 			service.sendNoSessionMessage(event.getChannel());
 		}

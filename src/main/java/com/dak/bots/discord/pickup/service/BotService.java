@@ -90,24 +90,24 @@ public class BotService {
 		return this.commandString;
 	}
 
-	public boolean hasExistingSession(final String guildId) {
-		return sessions.containsKey(guildId);
+	public boolean hasExistingSession(final String channelId) {
+		return sessions.containsKey(channelId);
 	}
 
-	public Optional<PickupSession> getSession(final String guildId) {
-		if(sessions.containsKey(guildId)) {
-			return Optional.of(sessions.get(guildId));
+	public Optional<PickupSession> getSession(final String channelId) {
+		if(sessions.containsKey(channelId)) {
+			return Optional.of(sessions.get(channelId));
 		} else {
 			return Optional.empty();
 		}
 	}
 
-	public void addSession(final String guildId, final PickupSession session) {
-		sessions.put(guildId, session);
+	public void addSession(final String channelId, final PickupSession session) {
+		sessions.put(channelId, session);
 	}
 
-	public void removeSession(final String guildId) {
-		sessions.remove(guildId);
+	public void removeSession(final String channelId) {
+		sessions.remove(channelId);
 	}
 
 	public boolean hasPermissions(final PickupCommand commandType, final MessageReceivedEvent event) {

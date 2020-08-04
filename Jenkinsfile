@@ -1,28 +1,31 @@
-node {
-   stage ('Checkout') {
-  	checkout scm 
-   }
+pipeline {
+	agent any
 
-   stage('Apply Permissions') {
-       // steps {
-            sh 'pwd'
-            sh 'chmod +x mvnw'
-       // }
-   }
-
-   /*stage('Test') {
-       // steps {
-            sh 'pwd'
-            sh 'chmod +x mvnw'
-            sh "./mvnw clean test"
-	    junit 'target/surefire-reports/*.xml'
-       // }
-   }*/
-
-   stage('Build') {
-       // steps {
-            sh "./mvnw clean package -DskipTests=true"
-            step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
-      //  }
-   }
+	stages {
+		stage ('Checkout') {
+			steps {
+				checkout scm 
+			}
+		}
+	
+		stage('Apply Permissions') {
+			steps {
+				sh 'pwd'
+				sh 'chmod +x mvnw'
+			}
+		}
+	
+		stage('Build') {
+			steps {
+				sh "./mvnw clean package -DskipTests=true"
+				step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+			}
+		}
+	}
+	
+	post {
+		cleanup {
+			deleteDir()
+		}
+	}
 }

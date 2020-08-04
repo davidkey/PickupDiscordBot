@@ -16,9 +16,9 @@ public class ResizeCommand implements PickupCommandExecutor {
 
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
-		final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
-		if(service.hasExistingSession(guildId)) {
-			final PickupSession session = service.getSession(guildId).get();
+		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
+		if(service.hasExistingSession(channelId)) {
+			final PickupSession session = service.getSession(channelId).get();
 			if(!service.hasPermissions(PickupCommand.RESIZE, event)){
 				service.sendPermissionsErrorMsg(event.getChannel());
 				return;
@@ -29,14 +29,14 @@ public class ResizeCommand implements PickupCommandExecutor {
 				return;
 			}
 
-			log.trace("attempting to resize session for guild {}", guildId);
+			log.trace("attempting to resize session for guild {}", channelId);
 
 			final String text = event.getMessage().getContentRaw().trim();
 			final PickupCommandMessage pickupMessage = new PickupCommandMessage(text);
 			final String[] args = pickupMessage.getArgs();
 
 			final PickupSession resizedSession = session.toBuilder().teamSize(Integer.parseInt(args[0])).build();
-			service.addSession(guildId, resizedSession);
+			service.addSession(channelId, resizedSession);
 
 			if(resizedSession.isOversized()) {
 				resizedSession.trimDownToSize();
@@ -46,7 +46,7 @@ public class ResizeCommand implements PickupCommandExecutor {
 				if(resizedSession.isAutoFilled()) {
 					resizedSession.populateSession();
 					service.sendGameReadyMsg(event.getChannel(), resizedSession);
-					service.removeSession(guildId);
+					service.removeSession(channelId);
 					return;
 				} else {
 					if(resizedSession.isGameFull()) {

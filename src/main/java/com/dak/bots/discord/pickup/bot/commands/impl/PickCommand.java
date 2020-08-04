@@ -18,11 +18,11 @@ public class PickCommand implements PickupCommandExecutor {
 
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
-		final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
+		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
 
 		// make sure there's an outstanding session
-		if(service.hasExistingSession(guildId)) {
-			final PickupSession session = service.getSession(guildId).get();
+		if(service.hasExistingSession(channelId)) {
+			final PickupSession session = service.getSession(channelId).get();
 
 			final Optional<PickupPlayer> captain = session.getNextCaptainToPick();
 			if(captain.isPresent() && captain.get().getId().equals(event.getAuthor().getId())){
@@ -39,7 +39,7 @@ public class PickCommand implements PickupCommandExecutor {
 				if(session.isGameFull()) {
 					// game is full - show message
 					service.sendGameReadyMsg(event.getChannel(), session);
-					service.removeSession(guildId);
+					service.removeSession(channelId);
 				} else {
 					final Optional<PickupPlayer> nextCaptain = session.getNextCaptainToPick();
 					final User nextCaptainUser = event.getGuild().getMemberById(nextCaptain.get().getId()).getUser();

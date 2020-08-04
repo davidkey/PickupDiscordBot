@@ -14,9 +14,9 @@ public class AddCommand implements PickupCommandExecutor {
 
 	@Override
 	public void execute(MessageReceivedEvent event, BotService service) {
-		final String guildId = event.getGuild().getId().replaceAll("[^0-9]", "");
-		if(service.hasExistingSession(guildId)) {
-			final PickupSession session = service.getSession(guildId).get();
+		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
+		if(service.hasExistingSession(channelId)) {
+			final PickupSession session = service.getSession(channelId).get();
 
 			if(session.isPlayerInSession(event.getAuthor().getId())) {
 				event.getChannel().sendMessage(event.getAuthor().getAsMention() + " - you're already queued!").queue();
@@ -41,7 +41,7 @@ public class AddCommand implements PickupCommandExecutor {
 					// autofill rosters and display
 					session.populateSession();
 					service.sendGameReadyMsg(event.getChannel(), session);
-					service.removeSession(guildId);
+					service.removeSession(channelId);
 				} else {
 					final User nextCaptainUser = event.getGuild().getMemberById(session.getNextCaptainToPick().get().getId()).getUser();
 					// session is ready for captains to pick
