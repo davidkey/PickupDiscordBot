@@ -1,19 +1,29 @@
-node {
-	stage ('Checkout') {
-		checkout scm 
-	}
+pipeline {
+	agent any
 
-	stage('Apply Permissions') {
-		sh 'pwd'
-		sh 'chmod +x mvnw'
+	stages {
+		stage ('Checkout') {
+			steps {
+				checkout scm 
+			}
+		}
+	
+		stage('Apply Permissions') {
+			steps {
+				sh 'pwd'
+				sh 'chmod +x mvnw'
+			}
+		}
+	
+		stage('Build') {
+			steps {
+				sh "./mvnw clean package -DskipTests=true"
+				step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+			}
+		}
 	}
-
-	stage('Build') {
-		sh "./mvnw clean package -DskipTests=true"
-		step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
-	}
-   
-   	post {
+	
+	post {
 		cleanup {
 			deleteDir()
 		}
