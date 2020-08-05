@@ -1,6 +1,5 @@
 package com.dak.bots.discord.pickup.bot.commands.impl;
 
-import com.dak.bots.discord.pickup.bot.commands.PickupCommand;
 import com.dak.bots.discord.pickup.bot.commands.PickupCommandExecutor;
 import com.dak.bots.discord.pickup.bot.commands.PickupCommandMessage;
 import com.dak.bots.discord.pickup.bot.model.PickupSession;
@@ -19,10 +18,6 @@ public class ResizeCommand implements PickupCommandExecutor {
 		final String channelId = event.getChannel().getId().replaceAll("[^0-9]", "");
 		if(service.hasExistingSession(channelId)) {
 			final PickupSession session = service.getSession(channelId).get();
-			if(!service.hasPermissions(PickupCommand.RESIZE, event)){
-				service.sendPermissionsErrorMsg(event.getChannel());
-				return;
-			} 
 
 			if(session.isGameFull()) {
 				event.getChannel().sendMessage("Cannot resize game as it is already full!").queue();

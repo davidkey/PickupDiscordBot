@@ -63,14 +63,27 @@ public class PickupBot extends ListenerAdapter {
 				 * Validate message; send help if invalid
 				 */
 				if(!PickupCommandMessage.validateMessage(text)) {
+					log.trace("invalid message sent: {}");
 					pickupBotService.sendHelpMsg(channel, true);
 					return;
 				}
 
 				final PickupCommandMessage pickupMessage = new PickupCommandMessage(text);
-
+				
+				/**
+				 * Log command
+				 */
 				log.trace("pickup message received: guildId={}; user={}; channel={}; channelId={}; pickupMessage={}; raw={}", 
 						event.getGuild().getId(), event.getAuthor().getAsTag(), channel.getName(), channel.getId(), pickupMessage, text);
+
+				/**
+				 * Check permissions
+				 */
+				if(!pickupBotService.hasPermissions(pickupMessage.getCommand(), event)) {
+					log.trace("{} does not have permissions to run command {}", event.getAuthor().getAsTag(), pickupMessage.getCommand());
+					pickupBotService.sendPermissionsErrorMsg(event.getChannel());
+					return;
+				}
 
 				/**
 				 * Dispatch command
