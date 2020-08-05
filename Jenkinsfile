@@ -14,6 +14,12 @@ pipeline {
 				sh 'chmod +x mvnw'
 			}
 		}
+		
+		stage('test') {
+			steps {
+				sh "./mvnw clean test"
+			}
+		}
 	
 		stage('Build') {
 			steps {

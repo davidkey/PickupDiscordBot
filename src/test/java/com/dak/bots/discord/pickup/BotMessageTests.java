@@ -7,19 +7,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.powermock.api.mockito.PowerMockito;
 
 import com.dak.bots.discord.pickup.bot.PickupBot;
-import com.dak.bots.discord.pickup.bot.commands.PickupCommand;
 import com.dak.bots.discord.pickup.bot.commands.impl.HelpCommand;
 import com.dak.bots.discord.pickup.mocks.MockSerializationService;
 import com.dak.bots.discord.pickup.service.BotService;
@@ -28,11 +22,10 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-
-import net.dv8tion.jda.api.entities.Role;
 
 public class BotMessageTests {
 
