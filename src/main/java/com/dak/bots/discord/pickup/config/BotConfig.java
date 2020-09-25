@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Slf4j
 public class BotConfig {
 
