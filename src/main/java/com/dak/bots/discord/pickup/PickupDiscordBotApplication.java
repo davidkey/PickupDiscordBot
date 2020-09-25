@@ -10,7 +10,7 @@ import com.dak.bots.discord.pickup.service.BotRunnerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 @RequiredArgsConstructor
 @Slf4j
 public class PickupDiscordBotApplication implements CommandLineRunner {
